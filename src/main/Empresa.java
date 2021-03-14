@@ -1,6 +1,7 @@
 package main;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Scanner;
 
 import excepciones.ExcepcionCifraVentasNegativo;
@@ -17,10 +18,10 @@ public class Empresa {
 		sc = new Scanner(System.in);
 		boolean fin = false;
 		
-		while(!false) {
+		while(!fin) {
 			try {
 			System.out.println("Introduce lo que quieras hacer (AÑADIR UN EMPLEADO = 1, MODIFICAR LA"
-					+ " CIFRA DE VENTAS = 2, MOSTRAR LA LISTA = 3, CONSULTAR EMPLEADO DEL MES = 4, SALIR = 5	)");
+					+ " CIFRA DE VENTAS = 2, MOSTRAR LA LISTA = 3, CONSULTAR EMPLEADO DEL MES = 4, SALIR = 5)");
 			int respuesta = Integer.parseInt(sc.nextLine());
 				switch (respuesta) {
 				case 1: {
@@ -58,17 +59,31 @@ public class Empresa {
 	}
 
 	private static void modificarCifraVentas() {
+		boolean datoOk = true;
+		int mes = 0;
 		if (lista.isEmpty()) {
 			System.out.println("No hay ningun empleado en la lista");
 		} else {
 			System.out.println("Introduce el dni del empleado a modificar");
 			String dni = sc.nextLine();
-				for (Empleado empleado : lista) {
-					if (!dni.equalsIgnoreCase(empleado.getDni())) {
-						System.out.println("No hay ningun empleado que tenga ese dni");	
+			Iterator<Empleado> it = lista.iterator();
+			while(it.hasNext() && datoOk) {
+			empleado = it.next();
+				if (dni.equalsIgnoreCase(empleado.getDni())) {
+					mes = solicitarMes("Introduce el mes del empleado");
+					int cifraDeVenta = solivitarCifraVentas("Introduce la nueva cifra de ventas");;
+					for (Empleado empleado : lista) {
+						if (dni.equalsIgnoreCase(empleado.getDni())) {
+							empleado.setMes(mes);
+							empleado.setCifraVentas(cifraDeVenta);
+						}
 					}
+					datoOk = false;
+				} else if (!dni.equalsIgnoreCase(empleado.getDni()) && !it.hasNext()) {
+					System.out.println("El dni introducido no esta en la lista");
+					datoOk = false;
 				}
-				
+			}
 		}
 		
 	}
